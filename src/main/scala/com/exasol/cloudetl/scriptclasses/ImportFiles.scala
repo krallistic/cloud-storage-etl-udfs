@@ -13,6 +13,9 @@ import org.apache.hadoop.fs.Path
 object ImportFiles extends LazyLogging {
 
   def run(meta: ExaMetadata, iter: ExaIterator): Unit = {
+    import org.apache.hadoop.security.UserGroupInformation
+
+    UserGroupInformation.setLoginUser(UserGroupInformation.createRemoteUser("exadefusr"))
     val bucketPath = iter.getString(0)
     val rest = iter.getString(1)
     val params = Bucket.keyValueStringToMap(rest)
@@ -21,7 +24,7 @@ object ImportFiles extends LazyLogging {
 
     val files = groupFiles(iter, 2)
     logger.info(s"Reading file = ${files.take(5).mkString(",")} from bucket = $bucketPath")
-
+    meta.g
     val source = createSource(format, files, bucket)
     readAndEmit(source, iter)
   }
