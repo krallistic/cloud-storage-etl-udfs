@@ -26,6 +26,9 @@ abstract class Bucket {
   /** The path string of the bucket. */
   val bucketPath: String
 
+  /** The user provided key value pair properties. */
+  val properties: Map[String, String]
+
   /** Validates that all required parameter key values are available. */
   def validate(): Unit
 
@@ -33,14 +36,14 @@ abstract class Bucket {
    * Creates a Hadoop [[org.apache.hadoop.conf.Configuration]] for this
    * specific bucket type.
    */
-  def createConfiguration(): Configuration
+  def getConfiguration(): Configuration
 
   /**
    * The Hadoop [[org.apache.hadoop.fs.FileSystem]] for this specific
    * bucket path.
    */
-  lazy val fileSystem: FileSystem =
-    FileSystem.get(new URI(bucketPath), createConfiguration())
+  final lazy val fileSystem: FileSystem =
+    FileSystem.get(new URI(bucketPath), getConfiguration())
 
   /**
    * Get the all the paths in this bucket path.
@@ -87,7 +90,7 @@ object Bucket extends LazyLogging {
 
   /**
    * An apply method that creates different [[Bucket]] classes depending
-   * on the path schema.
+   * on the path scheme.
    *
    * @param params The key value parameters
    * @return A [[Bucket]] class for the given path

@@ -11,10 +11,13 @@ final case class LocalBucket(path: String, params: Map[String, String]) extends 
   override val bucketPath: String = path
 
   /** @inheritdoc */
+  override val properties: Map[String, String] = params
+
+  /** @inheritdoc */
   override def validate(): Unit = ()
 
   /** @inheritdoc */
-  override def createConfiguration(): Configuration = {
+  override def getConfiguration(): Configuration = {
     validate()
     new Configuration()
   }

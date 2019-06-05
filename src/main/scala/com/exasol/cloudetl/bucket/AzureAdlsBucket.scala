@@ -9,8 +9,11 @@ final case class AzureAdlsBucket(path: String, params: Map[String, String]) exte
   override val bucketPath: String = path
 
   /** @inheritdoc */
+  override val properties: Map[String, String] = params
+
+  /** @inheritdoc */
   override def validate(): Unit =
-    Bucket.validate(params, Bucket.AZURE_ADLS_PARAMETERS)
+    Bucket.validate(properties, Bucket.AZURE_ADLS_PARAMETERS)
 
   /**
    * @inheritdoc
@@ -18,7 +21,7 @@ final case class AzureAdlsBucket(path: String, params: Map[String, String]) exte
    * Additionally validates that all required parameters are available
    * in order to create a configuration.
    */
-  override def createConfiguration(): Configuration = {
+  override def getConfiguration(): Configuration = {
     validate()
 
     val conf = new Configuration()
